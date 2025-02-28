@@ -1,67 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection interrupted</title>
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-    <script type="text/javascript">
-        var onloadCallback = function() {
-            const captchaContainer = document.getElementById('captchas');
-            for (let i = 0; i < 15; i++) {
-                let captchaDiv = document.createElement('div');
-                captchaDiv.id = 'captcha' + i; // Give each captcha a unique ID
-                captchaContainer.appendChild(captchaDiv);
-                grecaptcha.render('captcha' + i, {
-                    'sitekey' : '6LfamOUqAAAAAAFOtVLzKh2_EfDrZolGhuiRA1Uk'
-                });
-            }
-        };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection interrupted</title>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script type="text/javascript">
+        var onloadCallback = function() {
+            const captchaContainer = document.getElementById('captchas');
+            captchaContainer.innerHTML = ''; // Clear any existing captchas
+            let captchaCount = getCaptchaCount(); // Function to determine captcha count based on page
 
-        function checkCaptchasSolved() {
-            for (let i = 0; i < 15; i++) {
-                var response = grecaptcha.getResponse(i); // Use index as widget ID since we render captchas sequentially
-                if (!response) {
-                    return false; // If any captcha is not solved, return false
-                }
-            }
-            return true; // All captchas are solved
-        }
+            for (let i = 0; i < captchaCount; i++) {
+                let captchaDiv = document.createElement('div');
+                captchaDiv.id = 'captcha' + i;
+                captchaContainer.appendChild(captchaDiv);
+                grecaptcha.render('captcha' + i, {
+                    'sitekey' : '6LfamOUqAAAAAAFOtVLzKh2_EfDrZolGhuiRA1Uk'
+                });
+            }
+        };
 
-        function continueToURL() {
-            if (checkCaptchasSolved()) {
-                // Get the redirect URL from the URL path
-                const pathSegments = window.location.pathname.split('/');
-                let redirectURL = pathSegments[pathSegments.length - 1];
+        function getCaptchaCount() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let pageNumber = parseInt(urlParams.get('page'));
 
-                // Basic check to ensure it's not the page itself and is something to redirect to
-                if (redirectURL && redirectURL !== 'ProgressMonitoring' && redirectURL !== 'index.html') {
-                    window.location.href = decodeURIComponent(redirectURL); // Redirect to the URL, decode it
-                } else {
-                    alert("Redirect URL is missing or invalid."); // Handle case where redirect URL is not provided
-                }
-            } else {
-                alert("Please solve all captchas before continuing.");
-            }
-        }
-    </script>
+            if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > 5) {
+                return 1; // Default to 1 captcha if page number is invalid or not found
+            }
+            return pageNumber;
+        }
+
+        function checkCaptchasSolved() {
+            let captchaCount = getCaptchaCount();
+            for (let i = 0; i < captchaCount; i++) {
+                var response = grecaptcha.getResponse(i);
+                if (!response) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function continueToURL() {
+            if (checkCaptchasSolved()) {
+                const urlParams = new URLSearchParams(window.location.search);
+                let redirectURL = urlParams.get('url');
+                let pageNumber = parseInt(urlParams.get('page'));
+
+                if (isNaN(pageNumber)) {
+                    pageNumber = 1; // Default to page 1 if no page number in query parameter
+                }
+
+                if (pageNumber < 5) {
+                    // Redirect to the next captcha page
+                    let nextPageNumber = pageNumber + 1;
+                    let nextURL = `index.html?url=${encodeURIComponent(redirectURL)}&page=${nextPageNumber}`;
+                    window.location.href = nextURL;
+                } else {
+                    if (redirectURL) {
+                        window.location.href = decodeURIComponent(redirectURL); // Redirect to the final URL, decode it
+                    } else {
+                        alert("Redirect URL is missing.");
+                    }
+                }
+            } else {
+                alert("Please solve all captchas before continuing.");
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Connection interrupted</h1>
-    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha(s) then continue.</p>
-    <div id="captchas">
-    </div>
-    <button id="continueButton" onclick="continueToURL()">Continue</button>
+    <h1>Connection interrupted</h1>
+    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha(s) then continue.</p>
+    <div id="captchas">
+    </div>
+    <button id="continueButton" onclick="continueToURL()">Continue</button>
 
-    <script type="text/javascript">
-        // No longer using URL parameters, this is just for demonstration and can be removed
-        const pathSegments = window.location.pathname.split('/');
-        let redirectUrlPathParam = pathSegments[pathSegments.length - 1];
-        if (redirectUrlPathParam && redirectUrlPathParam  !== 'ProgressMonitoring' && redirectUrlPathParam !== 'index.html') {
-            console.log("Redirect URL path parameter found: " + decodeURIComponent(redirectUrlPathParam));
-        } else {
-            console.log("Redirect URL path parameter not found.");
-        }
-    </script>
+    <script type="text/javascript">
+        // Log the redirect URL query parameter for demonstration
+        const urlParams = new URLSearchParams(window.location.search);
+        let redirectUrlParam = urlParams.get('url');
+        if (redirectUrlParam) {
+            console.log("Redirect URL query parameter found: " + decodeURIComponent(redirectUrlParam));
+        } else {
+            console.log("Redirect URL query parameter not found.");
+        }
+
+        // Initial captcha rendering - will be updated by onloadCallback
+        onloadCallback();
+    </script>
 </body>
 </html>
