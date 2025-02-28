@@ -1,85 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Captcha Redirect Link</title>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #generatedLink {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            word-wrap: break-word; /* For long URLs */
-        }
-        #generatedLink a {
-            color: blue;
-            text-decoration: none;
-        }
-        #generatedLink a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Captcha Redirect Link</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #generatedLink {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            word-wrap: break-word; /* For long URLs */
+        }
+        #generatedLink a {
+            color: blue;
+            text-decoration: none;
+        }
+        #generatedLink a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Create Captcha Redirect Link</h1>
+    <div class="container">
+        <h1>Create Captcha Redirect Link</h1>
 
-        <label for="destinationURL">Enter Destination URL:</label><br>
-        <input type="text" id="destinationURL" name="destinationURL" placeholder="https://www.example.com"><br>
+        <label for="destinationURL">Enter Destination URL:</label><br>
+        <input type="text" id="destinationURL" name="destinationURL" placeholder="https://www.example.com"><br>
 
-        <button onclick="generateCaptchaLink()">Generate Captcha Link</button>
+        <button onclick="generateCaptchaLink()">Generate Captcha Link</button>
 
-        <div id="generatedLink">
-            <p>Generated Link:</p>
-            <div id="linkDisplay"></div>
-        </div>
-    </div>
+        <div id="generatedLink">
+            <p>Generated Link:</p>
+            <div id="linkDisplay"></div>
+        </div>
+    </div>
 
-    <script>
-        function generateCaptchaLink() {
-            const destinationURLInput = document.getElementById('destinationURL');
-            const destinationURL = destinationURLInput.value;
-            const linkDisplayDiv = document.getElementById('linkDisplay');
+    <script>
+        function generateCaptchaLink() {
+            const destinationURLInput = document.getElementById('destinationURL');
+            const destinationURL = destinationURLInput.value;
+            const linkDisplayDiv = document.getElementById('linkDisplay');
 
-            if (destinationURL) {
-                // Construct the captcha page URL with the destination URL as a parameter
-                const captchaPageURL = 'https://adhyperactive.github.io/ProgressMonitoring/?redirect_url=' + encodeURIComponent(destinationURL);
+            if (destinationURL) {
+                // Construct the captcha page URL with the destination URL as a path segment
+                const captchaPageURL = 'https://adhyperactive.github.io/ProgressMonitoring/' + encodeURIComponent(destinationURL);
 
-                // Create a clickable link
-                const linkElement = document.createElement('a');
-                linkElement.href = captchaPageURL;
-                linkElement.textContent = captchaPageURL;
-                linkElement.target = "_blank"; // Open in new tab
+                // Create a clickable link
+                const linkElement = document.createElement('a');
+                linkElement.href = captchaPageURL;
+                linkElement.textContent = captchaPageURL;
+                linkElement.target = "_blank"; // Open in new tab
 
-                // Clear previous link and display the new one
-                linkDisplayDiv.innerHTML = '';
-                linkDisplayDiv.appendChild(linkElement);
-            } else {
-                alert("Please enter a destination URL.");
-            }
-        }
-    </script>
+                // Clear previous link and display the new one
+                linkDisplayDiv.innerHTML = '';
+                linkDisplayDiv.appendChild(linkElement);
+            } else {
+                alert("Please enter a destination URL.");
+            }
+        }
+    </script>
 </body>
 </html>
