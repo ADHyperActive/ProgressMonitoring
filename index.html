@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection interrupted</title>
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-    <script type="text/javascript">
-        var onloadCallback = function() {
-            const captchaContainer = document.getElementById('captchas');
-            for (let i = 0; i < 15; i++) {
-                let captchaDiv = document.createElement('div');
-                captchaDiv.id = 'captcha' + i; // Give each captcha a unique ID
-                captchaContainer.appendChild(captchaDiv);
-                grecaptcha.render('captcha' + i, {
-                    'sitekey' : '6LfamOUqAAAAAAFOtVLzKh2_EfDrZolGhuiRA1Uk'
-                });
-            }
-        };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection interrupted</title>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script type="text/javascript">
+        var onloadCallback = function() {
+            const captchaContainer = document.getElementById('captchas');
+            for (let i = 0; i < 15; i++) {
+                let captchaDiv = document.createElement('div');
+                captchaDiv.id = 'captcha' + i; // Give each captcha a unique ID
+                captchaContainer.appendChild(captchaDiv);
+                grecaptcha.render('captcha' + i, {
+                    'sitekey' : '6LfamOUqAAAAAAFOtVLzKh2_EfDrZolGhuiRA1Uk'
+                });
+            }
+        };
 
-        function checkCaptchasSolved() {
-            for (let i = 0; i < 15; i++) {
-                var response = grecaptcha.getResponse(i); // Use index as widget ID since we render captchas sequentially
-                if (!response) {
-                    return false; // If any captcha is not solved, return false
-                }
-            }
-            return true; // All captchas are solved
-        }
+        function checkCaptchasSolved() {
+            for (let i = 0; i < 15; i++) {
+                var response = grecaptcha.getResponse(i); // Use index as widget ID since we render captchas sequentially
+                if (!response) {
+                    return false; // If any captcha is not solved, return false
+                }
+            }
+            return true; // All captchas are solved
+        }
 
-        function continueToURL() {
-            if (checkCaptchasSolved()) {
-                // Get the redirect URL from the URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                const redirectURL = urlParams.get('redirect_url');
+        function continueToURL() {
+            if (checkCaptchasSolved()) {
+                // Get the redirect URL from the URL path
+                const pathSegments = window.location.pathname.split('/');
+                let redirectURL = pathSegments[pathSegments.length - 1];
 
-                if (redirectURL) {
-                    window.location.href = redirectURL; // Redirect to the URL
-                } else {
-                    alert("Redirect URL is missing."); // Handle case where redirect URL is not provided
-                }
-            } else {
-                alert("Please solve all captchas before continuing.");
-            }
-        }
-    </script>
+                // Basic check to ensure it's not the page itself and is something to redirect to
+                if (redirectURL && redirectURL !== 'ProgressMonitoring' && redirectURL !== 'index.html') {
+                    window.location.href = decodeURIComponent(redirectURL); // Redirect to the URL, decode it
+                } else {
+                    alert("Redirect URL is missing or invalid."); // Handle case where redirect URL is not provided
+                }
+            } else {
+                alert("Please solve all captchas before continuing.");
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Connection interrupted</h1>
-    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha(s) then continue.</p>
-    <div id="captchas">
-    </div>
-    <button id="continueButton" onclick="continueToURL()">Continue</button>
+    <h1>Connection interrupted</h1>
+    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha(s) then continue.</p>
+    <div id="captchas">
+    </div>
+    <button id="continueButton" onclick="continueToURL()">Continue</button>
 
-    <script type="text/javascript">
-        // Example of how to get URL parameters (for demonstration, not strictly needed for captcha functionality)
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectUrlParam = urlParams.get('redirect_url');
-        if (redirectUrlParam) {
-            console.log("Redirect URL parameter found: " + redirectUrlParam);
-        } else {
-            console.log("Redirect URL parameter not found.");
-        }
-    </script>
+    <script type="text/javascript">
+        // No longer using URL parameters, this is just for demonstration and can be removed
+        const pathSegments = window.location.pathname.split('/');
+        let redirectUrlPathParam = pathSegments[pathSegments.length - 1];
+        if (redirectUrlPathParam && redirectUrlPathParam  !== 'ProgressMonitoring' && redirectUrlPathParam !== 'index.html') {
+            console.log("Redirect URL path parameter found: " + decodeURIComponent(redirectUrlPathParam));
+        } else {
+            console.log("Redirect URL path parameter not found.");
+        }
+    </script>
 </body>
 </html>
-```
