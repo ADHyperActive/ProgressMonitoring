@@ -76,8 +76,8 @@
             const linkDisplayDiv = document.getElementById('linkDisplay');
 
             if (destinationURL) {
-                // Construct the captcha page URL with the destination URL as a path segment
-                const captchaPageURL = 'https://adhyperactive.github.io/SystemRedirect/' + encodeURIComponent(destinationURL);
+                // Construct the captcha page URL with query parameters
+                const captchaPageURL = 'https://adhyperactive.github.io/SystemRedirect/index.html?url=' + encodeURIComponent(destinationURL) + '&page=1';
 
                 // Create a clickable link
                 const linkElement = document.createElement('a');
