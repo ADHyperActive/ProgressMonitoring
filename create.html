@@ -89,7 +89,7 @@
                 linkDisplayDiv.innerHTML = '';
                 linkDisplayDiv.appendChild(linkElement);
             } else {
-                alert("Please enter a destination URL.");
+                alert("Enter the URL to redirect to before creating a captcha URL.");
             }
         }
 
@@ -102,9 +102,9 @@
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
-                alert('Link copied to clipboard!');
+                alert('Successfully copied link.');
             } else {
-                alert("No link to copy.");
+                alert("Please generate a link first.");
             }
         }
     </script>
