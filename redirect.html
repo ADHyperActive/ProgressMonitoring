@@ -68,7 +68,7 @@
                 if (pageNumber < 15) {
                     // Redirect to the next captcha page
                     let nextPageNumber = pageNumber + 1;
-                    let nextURL = `index.html?url=${encodeURIComponent(redirectURL)}&page=${nextPageNumber}`;
+                    let nextURL = `redirect.html?url=${encodeURIComponent(redirectURL)}&page=${nextPageNumber}`;
                     window.location.href = nextURL;
                 } else {
                     if (redirectURL) {
