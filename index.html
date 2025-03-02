@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connection interrupted</title>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <style>
+        #progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            height: 20px;
+            margin-bottom: 20px;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            text-align: center; /* To center progress text */
+            line-height: 20px; /* To center progress text vertically */
+            color: white;
+        }
+    </style>
     <script type="text/javascript">
         var onloadCallback = function() {
             const captchaContainer = document.getElementById('captchas');
@@ -22,13 +41,7 @@
         };
 
         function getCaptchaCount() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let pageNumber = parseInt(urlParams.get('page'));
-
-            if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > 5) {
-                return 1; // Default to 1 captcha if page number is invalid or not found
-            }
-            return pageNumber;
+            return 1; // Always return 1 captcha per page
         }
 
         function checkCaptchasSolved() {
@@ -52,7 +65,7 @@
                     pageNumber = 1; // Default to page 1 if no page number in query parameter
                 }
 
-                if (pageNumber < 5) {
+                if (pageNumber < 15) {
                     // Redirect to the next captcha page
                     let nextPageNumber = pageNumber + 1;
                     let nextURL = `index.html?url=${encodeURIComponent(redirectURL)}&page=${nextPageNumber}`;
@@ -65,14 +78,40 @@
                     }
                 }
             } else {
-                alert("Please solve all captchas before continuing.");
+                alert("Please solve the captcha before continuing.");
             }
         }
+
+        function updateProgressBar() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let pageNumber = parseInt(urlParams.get('page'));
+            if (isNaN(pageNumber)) {
+                pageNumber = 1;
+            }
+
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercentage = ((pageNumber - 1) / 14) * 100; // Calculate percentage for 15 pages
+            progressBar.style.width = progressPercentage + '%';
+            progressBar.textContent = pageNumber + '/' + 15; // Display page number/total pages
+
+            const continueButton = document.getElementById('continueButton');
+            if (pageNumber === 15) {
+                continueButton.textContent = 'Go to site';
+            } else {
+                continueButton.textContent = 'Continue';
+            }
+        }
+
     </script>
 </head>
-<body>
+<body onload="updateProgressBar()">
     <h1>Connection interrupted</h1>
-    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha(s) then continue.</p>
+    <p>Your connection has been interrupted due to high internet traffic. To continue, please solve the captcha then continue.</p>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
     <div id="captchas">
     </div>
     <button id="continueButton" onclick="continueToURL()">Continue</button>
