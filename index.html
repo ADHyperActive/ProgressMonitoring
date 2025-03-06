@@ -1,112 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Captcha Redirect Link</title>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #generatedLink {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            word-wrap: break-word; /* For long URLs */
-            display: flex;
-            align-items: center;
-        }
-        #generatedLink a {
-            color: blue;
-            text-decoration: none;
-            flex-grow: 1;
-        }
-        #generatedLink a:hover {
-            text-decoration: underline;
-        }
-        #copyButton {
-            margin-left: 10px;
-            padding: 8px 15px;
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Captcha Redirect Link</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #generatedLink {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            word-wrap: break-word; /* For long URLs */
+            display: flex;
+            align-items: center;
+        }
+        #generatedLink a {
+            color: blue;
+            text-decoration: none;
+            flex-grow: 1;
+        }
+        #generatedLink a:hover {
+            text-decoration: underline;
+        }
+        #copyButton {
+            margin-left: 10px;
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Create Captcha Redirect Link</h1>
+    <div class="container">
+        <h1>Create Captcha Redirect Link</h1>
 
-        <label for="destinationURL">Enter Destination URL:</label><br>
-        <input type="text" id="destinationURL" name="destinationURL" placeholder="https://www.example.com"><br>
+        <label for="destinationURL">Enter Destination URL:</label><br>
+        <input type="text" id="destinationURL" name="destinationURL" placeholder="https://www.example.com"><br>
 
-        <button onclick="generateCaptchaLink()">Generate Captcha Link</button>
+        <label for="captchaNumber">Enter Number of Captchas:</label><br>
+        <input type="number" id="captchaNumber" name="captchaNumber" value="1" min="1"><br>
 
-        <div id="generatedLink">
-            <p>Generated Link:</p>
-            <div id="linkDisplay"></div>
-            <button id="copyButton" onclick="copyToClipboard()">Copy</button>
-        </div>
-    </div>
+        <button onclick="generateCaptchaLink()">Generate Captcha Link</button>
 
-    <script>
-        function generateCaptchaLink() {
-            const destinationURLInput = document.getElementById('destinationURL');
-            const destinationURL = destinationURLInput.value;
-            const linkDisplayDiv = document.getElementById('linkDisplay');
+        <div id="generatedLink">
+            <p>Generated Link:</p>
+            <div id="linkDisplay"></div>
+            <button id="copyButton" onclick="copyToClipboard()">Copy</button>
+        </div>
+    </div>
 
-            if (destinationURL) {
-                // Construct the captcha page URL with query parameters
-                const captchaPageURL = 'https://adhyperactive.github.io/SystemRedirect/redirect.html?url=' + encodeURIComponent(destinationURL) + '&page=1';
+    <script>
+        function generateCaptchaLink() {
+            const destinationURLInput = document.getElementById('destinationURL');
+            const destinationURL = destinationURLInput.value;
+            const captchaNumberInput = document.getElementById('captchaNumber');
+            const captchaNumber = captchaNumberInput.value;
+            const linkDisplayDiv = document.getElementById('linkDisplay');
 
-                // Create a clickable link
-                const linkElement = document.createElement('a');
-                linkElement.href = captchaPageURL;
-                linkElement.textContent = captchaPageURL;
-                linkElement.target = "_blank"; // Open in new tab
+            if (destinationURL) {
+                // Construct the captcha page URL with query parameters
+                const captchaPageURL = 'https://adhyperactive.github.io/SystemRedirect/redirect.html?url=' + encodeURIComponent(destinationURL) + '&page=1&captchas=' + encodeURIComponent(captchaNumber);
 
-                // Clear previous link and display the new one
-                linkDisplayDiv.innerHTML = '';
-                linkDisplayDiv.appendChild(linkElement);
-            } else {
-                alert("Enter the URL to redirect to before creating a captcha URL.");
-            }
-        }
+                // Create a clickable link
+                const linkElement = document.createElement('a');
+                linkElement.href = captchaPageURL;
+                linkElement.textContent = captchaPageURL;
+                linkElement.target = "_blank"; // Open in new tab
 
-        function copyToClipboard() {
-            const linkElement = document.querySelector('#linkDisplay a');
-            if (linkElement) {
-                const tempInput = document.createElement('textarea');
-                tempInput.value = linkElement.href;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert('Successfully copied link.');
-            } else {
-                alert("Please generate a link first.");
-            }
-        }
-    </script>
+                // Clear previous link and display the new one
+                linkDisplayDiv.innerHTML = '';
+                linkDisplayDiv.appendChild(linkElement);
+            } else {
+                alert("Enter the URL to redirect to before creating a captcha URL.");
+            }
+        }
+
+        function copyToClipboard() {
+            const linkElement = document.querySelector('#linkDisplay a');
+            if (linkElement) {
+              t const tempInput = document.createElement('textarea');
+                tempInput.value = linkElement.href;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('Successfully copied link.');
+            } else {
+                alert("Please generate a link first.");
+            }
+        }
+    </script>
 </body>
 </html>
